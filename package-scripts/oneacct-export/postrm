@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# Perform necessary oneacct-export removal steps
+# after package is uninstalled.
+#
+
+echo "oneacct-export has been uninstalled!"
+
+exit 0
