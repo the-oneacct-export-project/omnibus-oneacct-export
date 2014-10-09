@@ -23,6 +23,8 @@ dependency 'version-manifest'
 case Facter.value('operatingsystem')
 when 'Debian'
   runtime_dependency 'redis-server'
+when 'Ubuntu'
+  runtime_dependency 'redis-server'
 when 'CentOS'
   runtime_dependency 'redis'
 end

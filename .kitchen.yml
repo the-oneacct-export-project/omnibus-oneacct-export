@@ -7,23 +7,38 @@ driver:
     - ['.', '/home/vagrant/oneacct-export']
 
 provisioner:
+  name: chef_solo
   require_chef_omnibus: 11.8.0
 
 platforms:
-  - name: ubuntu-12.04
-    run_list: apt::default
-  - name: ubuntu-11.04
-    run_list: apt::default
   - name: ubuntu-10.04
     run_list: apt::default
+  - name: ubuntu-12.04
+    run_list: apt::default
+  - name: ubuntu-14.04
+    run_list: apt::default
+  - name: debian-6.0.10
+    run_list: apt::default
+  - name: debian-7.6
+    run_list: apt::default
   - name: centos-5.10
+    run_list: centos5-atrpms-repository::default
   - name: centos-6.5
 
 suites:
   - name: default
-    run_list: omnibus::default
+    run_list:
+      - resolver::default
+      - omnibus::default
+      - omnibus-build::default
     attributes:
       omnibus:
         build_user:  vagrant
         build_dir:   /home/vagrant/oneacct-export
         install_dir: /opt/oneacct-export
+      resolver:
+        nameservers:
+          - 8.8.8.8
+          - 147.251.4.33
+          - 147.251.6.10
+        search: ics.muni.cz
