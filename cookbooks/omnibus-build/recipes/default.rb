@@ -1,3 +1,8 @@
+project_name = 'oneacct-export'
+home_dir = '/home/vagrant'
+work_dir = "#{home_dir}/#{project_name}"
+build_env = { "HOME" => home_dir }
+
 bash 'run_omnibus_build' do
   case node[:platform]
   when 'debian'
@@ -24,16 +29,26 @@ bash 'run_omnibus_build' do
       pkg_dir = 'ubuntu-14.04'
     end
   end
-  
-  pkg_dir = pkg_dir ? "packages/#{pkg_dir}" : "packages"
 
-  cwd '/home/vagrant/oneacct-export'
+  user 'vagrant'
+  group 'omnibus'
+  environment build_env
+
+  pkg_dir = pkg_dir ? "#{work_dir}/packages/#{pkg_dir}" : "#{work_dir}/packages"
+  cwd work_dir
   timeout 7200
+
   code <<-EOC
-    bundle install
-    bin/omnibus build oneacct-export
-    mkdir -p #{pkg_dir}
-    cp pkg/* #{pkg_dir}
-    rm -r pkg
+    #{home_dir}/.bashrc.d/chruby-default.sh
+    chruby-exec 2.1.2 -- bundle install --binstubs
+    chruby-exec 2.1.2 -- bundle exec omnibus build #{project_name}
+
+    if [ $? -eq 0 ]; then
+      mkdir -p #{pkg_dir}
+      cp #{work_dir}/pkg/* #{pkg_dir}
+      rm -r #{work_dir}/pkg
+    else
+      exit 125
+    fi
   EOC
 end
