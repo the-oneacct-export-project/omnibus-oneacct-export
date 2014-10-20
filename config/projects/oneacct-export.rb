@@ -6,10 +6,10 @@ homepage 'https://github.com/Misenko/oneacct_export'
 
 install_dir     '/opt/oneacct-export'
 build_version   "0.0.1"
-build_iteration 1
+build_iteration 2
 
 override :rubygems, :version => '2.4.1'
-override :ruby, :version => '2.1.2'
+override :ruby, :version => '2.1.3'
 
 # creates required build directories
 dependency 'preparation'
