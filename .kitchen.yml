@@ -2,7 +2,7 @@ driver:
   name: vagrant
   customize:
     cpus: 2
-    memory: 2048
+    memory: 3072
   synced_folders:
     - ['.', '/home/vagrant/oneacct-export']
 
