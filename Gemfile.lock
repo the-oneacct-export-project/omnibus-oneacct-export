@@ -1,12 +1,12 @@
 GIT
   remote: git://github.com/opscode/omnibus-software.git
-  revision: 668b0e41c06ef5f484ca8d5f20bec3b89b2b6765
+  revision: 2e08f2dbadd65a74ded91f48b3a1df0cd0e552a5
   specs:
     omnibus-software (4.0.0)
 
 GIT
   remote: git://github.com/opscode/omnibus.git
-  revision: 95729f226929717cc48b01b0f435f81dab87a218
+  revision: d6313d6d39de81183371399324d8961eafe2821a
   specs:
     omnibus (4.0.0.rc.1)
       chef-sugar (~> 2.2)
@@ -48,10 +48,10 @@ GEM
       buff-ruby_engine (~> 0.1.0)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    celluloid-io (0.16.0)
+    celluloid-io (0.16.1)
       celluloid (>= 0.16.0)
       nio4r (>= 1.0.0)
-    chef-sugar (2.3.0)
+    chef-sugar (2.4.1)
     cleanroom (1.0.0)
     dep-selector-libgecode (1.0.2)
     dep_selector (1.0.3)
@@ -62,8 +62,8 @@ GEM
       CFPropertyList (~> 2.2.6)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
-    ffi (1.9.3)
-    ffi-yajl (1.1.0)
+    ffi (1.9.6)
+    ffi-yajl (1.2.0)
       ffi (~> 1.5)
       libyajl2 (~> 1.0)
     hashie (2.1.2)
@@ -72,7 +72,7 @@ GEM
     json (1.8.1)
     kitchen-vagrant (0.15.0)
       test-kitchen (~> 1.0)
-    libyajl2 (1.0.1)
+    libyajl2 (1.1.0)
     mime-types (1.25.1)
     minitar (0.5.4)
     mixlib-authentication (1.3.0)
@@ -80,14 +80,14 @@ GEM
     mixlib-cli (1.5.0)
     mixlib-config (2.1.0)
     mixlib-log (1.6.0)
-    mixlib-shellout (1.4.0)
+    mixlib-shellout (1.6.0)
     multipart-post (2.0.0)
     net-http-persistent (2.9.4)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.1)
     nio4r (1.0.1)
-    octokit (3.3.1)
+    octokit (3.4.2)
       sawyer (~> 0.5.3)
     ohai (7.4.0)
       ffi (~> 1.9)
@@ -118,7 +118,7 @@ GEM
       retryable
       semverse (~> 1.1)
       varia_model (~> 0.4)
-    safe_yaml (1.0.3)
+    safe_yaml (1.0.4)
     sawyer (0.5.5)
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
