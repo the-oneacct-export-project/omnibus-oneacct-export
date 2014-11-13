@@ -1,11 +1,9 @@
 name "oneacct-export"
-default_version "master"
+default_version "0.2.0"
 
 dependency "ruby"
 dependency "rubygems"
 
 build do
-  gem_name = "oneacct-export"
-
-  gem "install #{gem_name} -n #{install_dir}/bin --no-rdoc --no-ri"
+  gem "install oneacct-export -n #{install_dir}/bin --no-rdoc --no-ri -v #{version}"
 end
