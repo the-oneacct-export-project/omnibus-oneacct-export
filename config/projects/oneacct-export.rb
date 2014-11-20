@@ -6,7 +6,7 @@ homepage 'https://github.com/EGI-FCTF/oneacct_export'
 
 install_dir     '/opt/oneacct-export'
 build_version   "0.2.1"
-build_iteration 1
+build_iteration 2
 
 override :rubygems, :version => '2.4.1'
 ## WARN: do not forget to change RUBY_VERSION in the postinst script
