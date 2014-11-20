@@ -1,4 +1,5 @@
 name "oneacct-export"
+## WARN: do not forget to change ONEACCT_VERSION in the postinst script
 default_version "0.2.1"
 
 dependency "ruby"

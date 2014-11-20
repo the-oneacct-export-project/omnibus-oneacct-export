@@ -10,11 +10,54 @@ DEST_DIR=/opt/oneacct-export
 CONFIG_DIR=/etc/oneacct-export
 BIN_DIR=/usr/bin
 
+RUN_DIR=/var/run/oneacct-export
+LOG_DIR=/var/log/oneacct-export
+EXPORTER_CONFIG_FILE=$CONFIG_DIR/conf.yml
+SIDEKIQ_CONFIG_FILE=$CONFIG_DIR/sidekiq.yml
+APEL_OUT_DIR=/var/spool/apel/outgoing/00000000
+
+RUBY_VERSION=2.1.0
+ONEACCT_VERSION=0.2.1
+
 function error_exit
 {
   echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
   exit 1
 }
+
+# chown
+chown -R root:root $DEST_DIR || error_exit "Cannot chown $DEST_DIR to root:root"
+
+# create the apel user
+id -u apel 2>/dev/null
+if [ "$?" -ne "0" ]; then
+  useradd --system --shell /bin/false apel || error_exit "Cannot create the apel user account"
+  usermod -L apel || error_exit "Cannot lock the apel user account"
+fi
+
+# prepare runtime dirs
+mkdir -p $RUN_DIR || error_exit "Cannot create $RUN_DIR"
+chown apel:apel $RUN_DIR || error_exit "Cannot chown $RUN_DIR to apel:apel"
+
+mkdir -p $LOG_DIR || error_exit "Cannot create $LOG_DIR"
+chown apel:apel $LOG_DIR || error_exit "Cannot chown $LOG_DIR to apel:apel"
+
+mkdir -p $APEL_OUT_DIR || error_exit "Cannot create $APEL_OUT_DIR"
+chown apel:apel $APEL_OUT_DIR || error_exit "Cannot chown $APEL_OUT_DIR to apel:apel"
+
+# prepare configuration dir
+mkdir -p $CONFIG_DIR || error_exit "Cannot create $CONFIG_DIR"
+chown root:root $CONFIG_DIR || error_exit "Cannot chown $CONFIG_DIR to root:root"
+
+if [ -f "$EXPORTER_CONFIG_FILE" ]; then
+  EXPORTER_CONFIG_FILE=$EXPORTER_CONFIG_FILE.new
+fi
+cp $DEST_DIR/embedded/lib/ruby/gems/$RUBY_VERSION/gems/oneacct-export-$ONEACCT_VERSION/config/conf.yml $EXPORTER_CONFIG_FILE || error_exit "Cannot create $EXPORTER_CONFIG_FILE"
+
+if [ -f "$SIDEKIQ_CONFIG_FILE" ]; then
+  SIDEKIQ_CONFIG_FILE=$SIDEKIQ_CONFIG_FILE.new
+fi
+cp $DEST_DIR/embedded/lib/ruby/gems/$RUBY_VERSION/gems/oneacct-export-$ONEACCT_VERSION/config/sidekiq.yml $SIDEKIQ_CONFIG_FILE || error_exit "Cannot create $SIDEKIQ_CONFIG_FILE"
 
 # symlink bin files into $BIN_DIR
 ln -sf $DEST_DIR/bin/oneacct-export $BIN_DIR || error_exit "Cannot link oneacct-export to $BIN_DIR"
