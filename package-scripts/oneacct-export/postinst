@@ -14,7 +14,8 @@ RUN_DIR=/var/run/oneacct-export
 LOG_DIR=/var/log/oneacct-export
 EXPORTER_CONFIG_FILE=$CONFIG_DIR/conf.yml
 SIDEKIQ_CONFIG_FILE=$CONFIG_DIR/sidekiq.yml
-APEL_OUT_DIR=/var/spool/apel/outgoing/00000000
+APEL_BASE_DIR=/var/spool/apel
+APEL_OUT_DIR=$APEL_BASE_DIR/outgoing/00000000
 
 RUBY_VERSION=2.1.0
 ONEACCT_VERSION=0.2.1
@@ -42,8 +43,10 @@ chown apel:apel $RUN_DIR || error_exit "Cannot chown $RUN_DIR to apel:apel"
 mkdir -p $LOG_DIR || error_exit "Cannot create $LOG_DIR"
 chown apel:apel $LOG_DIR || error_exit "Cannot chown $LOG_DIR to apel:apel"
 
-mkdir -p $APEL_OUT_DIR || error_exit "Cannot create $APEL_OUT_DIR"
-chown apel:apel $APEL_OUT_DIR || error_exit "Cannot chown $APEL_OUT_DIR to apel:apel"
+if [ ! -d "$APEL_BASE_DIR" ]; then
+  mkdir -p $APEL_OUT_DIR || error_exit "Cannot create $APEL_OUT_DIR"
+  chown -R apel:apel $APEL_BASE_DIR || error_exit "Cannot chown $APEL_BASE_DIR to apel:apel"
+fi
 
 # prepare configuration dir
 mkdir -p $CONFIG_DIR || error_exit "Cannot create $CONFIG_DIR"
