@@ -5,12 +5,19 @@
 #
 
 PROGNAME=$(basename $0)
+INSTALLER_DIR=`dirname $0`
+DEST_DIR=/opt/oneacct-export
+CONFIG_DIR=/etc/oneacct-export
+BIN_DIR=/usr/bin
 
 function error_exit
 {
   echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
   exit 1
 }
+
+# symlink bin files into $BIN_DIR
+ln -sf $DEST_DIR/bin/oneacct-export $BIN_DIR || error_exit "Cannot link oneacct-export to $BIN_DIR"
 
 echo "Thank you for installing oneacct-export!"
 
