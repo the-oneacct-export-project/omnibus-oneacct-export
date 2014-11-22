@@ -5,13 +5,13 @@ maintainer 'Michal Kimle'
 homepage 'https://github.com/EGI-FCTF/oneacct_export'
 
 install_dir     '/opt/oneacct-export'
-build_version   "0.2.1"
-build_iteration 3
+build_version   "0.2.2"
+build_iteration 1
 
-override :rubygems, :version => '2.4.1'
+override :rubygems, :version => '2.4.4'
 ## WARN: do not forget to change RUBY_VERSION in the postinst script
 ##       when switching to a new minor version
-override :ruby, :version => '2.1.3'
+override :ruby, :version => '2.1.5'
 
 # creates required build directories
 dependency 'preparation'
