@@ -9,6 +9,8 @@ INSTALLER_DIR=`dirname $0`
 DEST_DIR=/opt/oneacct-export
 CONFIG_DIR=/etc/oneacct-export
 BIN_DIR=/usr/bin
+CRON_DIR=/etc/cron.d
+INIT_DIR=/etc/init.d
 
 RUN_DIR=/var/run/oneacct-export
 LOG_DIR=/var/log/oneacct-export
@@ -19,6 +21,8 @@ APEL_OUT_DIR=$APEL_BASE_DIR/outgoing/00000000
 
 RUBY_VERSION=2.1.0
 ONEACCT_VERSION=0.2.2
+
+EMBEDDED_GEM_ROOT=$DEST_DIR/embedded/lib/ruby/gems/$RUBY_VERSION/gems/oneacct-export-$ONEACCT_VERSION
 
 function error_exit
 {
@@ -55,15 +59,27 @@ chown root:root $CONFIG_DIR || error_exit "Cannot chown $CONFIG_DIR to root:root
 if [ -f "$EXPORTER_CONFIG_FILE" ]; then
   EXPORTER_CONFIG_FILE=$EXPORTER_CONFIG_FILE.new
 fi
-cp $DEST_DIR/embedded/lib/ruby/gems/$RUBY_VERSION/gems/oneacct-export-$ONEACCT_VERSION/config/conf.yml $EXPORTER_CONFIG_FILE || error_exit "Cannot create $EXPORTER_CONFIG_FILE"
+cp $EMBEDDED_GEM_ROOT/config/conf.yml $EXPORTER_CONFIG_FILE || error_exit "Cannot create $EXPORTER_CONFIG_FILE"
 
 if [ -f "$SIDEKIQ_CONFIG_FILE" ]; then
   SIDEKIQ_CONFIG_FILE=$SIDEKIQ_CONFIG_FILE.new
 fi
-cp $DEST_DIR/embedded/lib/ruby/gems/$RUBY_VERSION/gems/oneacct-export-$ONEACCT_VERSION/config/sidekiq.yml $SIDEKIQ_CONFIG_FILE || error_exit "Cannot create $SIDEKIQ_CONFIG_FILE"
+cp $EMBEDDED_GEM_ROOT/config/sidekiq.yml $SIDEKIQ_CONFIG_FILE || error_exit "Cannot create $SIDEKIQ_CONFIG_FILE"
 
 # symlink bin files into $BIN_DIR
 ln -sf $DEST_DIR/bin/oneacct-export $BIN_DIR || error_exit "Cannot link oneacct-export to $BIN_DIR"
+ln -sf $EMBEDDED_GEM_ROOT/examples/usr/bin/oneacct-export-cron $BIN_DIR || error_exit "Cannot link oneacct-export-cron to $BIN_DIR"
+
+# set up cron integration
+if [ -d "$CRON_DIR" ]; then
+  cp $EMBEDDED_GEM_ROOT/examples/etc/cron.d/oneacct-export $CRON_DIR || error_exit "Cannot register oneacct-export in $CRON_DIR"
+fi
+
+# set up init scripts
+if [ -d "$INIT_DIR" ]; then
+  cp $EMBEDDED_GEM_ROOT/examples/etc/init.d/oneacct-export-cron $INIT_DIR || error_exit "Cannot register oneacct-export-cron in $INIT_DIR"
+  cp $EMBEDDED_GEM_ROOT/examples/etc/init.d/oneacct-export-sidekiq $INIT_DIR || error_exit "Cannot register oneacct-export-sidekiq in $INIT_DIR"
+fi
 
 echo "Thank you for installing oneacct-export!"
 
