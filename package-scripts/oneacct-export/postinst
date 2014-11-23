@@ -81,6 +81,9 @@ if [ -d "$INIT_DIR" ]; then
   cp $EMBEDDED_GEM_ROOT/examples/etc/init.d/oneacct-export-sidekiq $INIT_DIR || error_exit "Cannot register oneacct-export-sidekiq in $INIT_DIR"
 fi
 
+# adapt configuration example to the current system
+sed -i "s/occi\.localhost\.com/$(hostname -f)/g" $EXPORTER_CONFIG_FILE || error_exit "Cannot adapt $EXPORTER_CONFIG_FILE to local configuration"
+
 echo "Thank you for installing oneacct-export!"
 
 exit 0
