@@ -36,7 +36,7 @@ chown -R root:root $DEST_DIR || error_exit "Cannot chown $DEST_DIR to root:root"
 # create the apel user
 id -u apel 2>/dev/null
 if [ "$?" -ne "0" ]; then
-  useradd --system --shell /bin/false apel || error_exit "Cannot create the apel user account"
+  useradd --system --shell /bin/false --home /var/lib/apel --create-home apel || error_exit "Cannot create the apel user account"
   usermod -L apel || error_exit "Cannot lock the apel user account"
 fi
 
