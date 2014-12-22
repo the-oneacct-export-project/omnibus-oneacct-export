@@ -18,6 +18,11 @@ function error_exit
   exit 1
 }
 
+if [ "X$1" = "Xupgrade" ] || [ "X$1" = "X1" ]; then
+  echo "Skipping clean-up, this is an upgrade!"
+  exit 0
+fi
+
 # clean up cron integration
 if [ -f "$CRON_DIR/oneacct-export" ]; then
   rm $CRON_DIR/oneacct-export
