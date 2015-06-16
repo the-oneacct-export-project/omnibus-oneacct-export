@@ -1,8 +1,9 @@
 require 'facter'
 
 name 'oneacct-export'
-maintainer 'Michal Kimle'
+maintainer 'Michal Kimle <kimle.michal@gmail.com>'
 homepage 'https://github.com/EGI-FCTF/oneacct_export'
+description 'A tool for exporting OpenNebula\'s accounting data to APEL.'
 
 install_dir     '/opt/oneacct-export'
 build_version   "0.2.7"
@@ -23,12 +24,24 @@ dependency 'oneacct-export'
 dependency 'version-manifest'
 
 case Facter.value('operatingsystem')
-when 'Debian'
-  runtime_dependency 'redis-server'
-when 'Ubuntu'
+when 'Debian', 'Ubuntu'
   runtime_dependency 'redis-server'
 when 'CentOS'
   runtime_dependency 'redis'
+end
+
+# tweaking package-specific options
+package :deb do
+  vendor 'CESNET, Grid Department <cloud@metacentrum.cz>'
+  license 'MIT'
+  priority 'extra'
+  section 'net'
+end
+
+package :rpm do
+  vendor 'CESNET, Grid Department <cloud@metacentrum.cz>'
+  license 'MIT'
+  category 'Applications/System'
 end
 
 exclude '\.git*'
