@@ -3,6 +3,7 @@ DEPENDENCIES
   omnibus
   omnibus-build
     path: cookbooks/omnibus-build
+  resolver
   yum-epel (~> 0.6.5)
 
 GRAPH
@@ -38,7 +39,9 @@ GRAPH
     wix (>= 0.0.0)
   omnibus-build (0.1.3)
     omnibus (>= 0.0.0)
+    resolver (>= 0.0.0)
   remote_install (1.0.2)
+  resolver (1.3.0)
   windows (1.38.4)
     chef_handler (>= 0.0.0)
   windows-sdk (1.0.2)
