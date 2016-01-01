@@ -4,6 +4,7 @@ default_version "0.2.7"
 
 dependency "ruby"
 dependency "rubygems"
+dependency "liblzma"
 
 build do
   gem "install oneacct-export -n #{install_dir}/bin --no-rdoc --no-ri -v #{version}"
