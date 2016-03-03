@@ -2,10 +2,9 @@
 .bundle
 .kitchen/
 .kitchen.local.yml
-vendor/bundle
+vendor/
 pkg/*
 .vagrant
 bin/*
 files/**/cache/
-vendor/cookbooks
-packages/
+packages/*
