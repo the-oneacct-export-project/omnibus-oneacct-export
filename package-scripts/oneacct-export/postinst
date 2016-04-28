@@ -21,6 +21,7 @@ APEL_OUT_DIR=$APEL_BASE_DIR/outgoing/00000000
 
 RUBY_VERSION=2.1.0
 ONEACCT_VERSION=0.2.7
+ONEACCT_NEW_CONFIG_VERSION=0.4
 
 EMBEDDED_GEM_ROOT=$DEST_DIR/embedded/lib/ruby/gems/$RUBY_VERSION/gems/oneacct-export-$ONEACCT_VERSION
 
@@ -60,6 +61,12 @@ if [ -f "$EXPORTER_CONFIG_FILE" ]; then
   EXPORTER_CONFIG_FILE=$EXPORTER_CONFIG_FILE.new
 fi
 cp $EMBEDDED_GEM_ROOT/config/conf.yml $EXPORTER_CONFIG_FILE || error_exit "Cannot create $EXPORTER_CONFIG_FILE"
+
+# copy new version of configuration file if moving through 0.4 version
+if [ "x$2" \> "x$ONEACCT_NEW_CONFIG_VERSION" ] || [ "$1" != "configure" -a "x$1" \> "x1" -a "x$RPM_PACKAGE_VERSION" \> "x$ONEACCT_NEW_CONFIG_VERSION" ]; then
+  mv $EXPORTER_CONFIG_FILE $EXPORTER_CONFIG_FILE.old || error_exit "Cannot move $EXPORTER_CONFIG_FILE"
+  cp $EMBEDDED_GEM_ROOT/config/conf.yml $EXPORTER_CONFIG_FILE || error_exit "Cannot create $EXPORTER_CONFIG_FILE"
+fi
 
 if [ -f "$SIDEKIQ_CONFIG_FILE" ]; then
   SIDEKIQ_CONFIG_FILE=$SIDEKIQ_CONFIG_FILE.new
