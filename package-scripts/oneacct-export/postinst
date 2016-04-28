@@ -91,6 +91,12 @@ fi
 # adapt configuration example to the current system
 sed -i "s/occi\.localhost\.com/$(hostname -f)/g" $EXPORTER_CONFIG_FILE || error_exit "Cannot adapt $EXPORTER_CONFIG_FILE to local configuration"
 
+# restart sidekiq service if running
+service oneacct-export-sidekiq status > /dev/null 2>&1
+if [ "$?" -eq "0" ]; then
+  service oneacct-export-sidekiq restart
+fi
+
 echo "Thank you for installing oneacct-export!"
 
 exit 0
