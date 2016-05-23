@@ -20,7 +20,8 @@ APEL_BASE_DIR=/var/spool/apel
 APEL_OUT_DIR=$APEL_BASE_DIR/outgoing/00000000
 
 RUBY_VERSION=2.1.0
-ONEACCT_VERSION=0.2.7
+ONEACCT_VERSION=0.4.2
+ONEACCT_NEW_CONFIG_VERSION=0.4
 
 EMBEDDED_GEM_ROOT=$DEST_DIR/embedded/lib/ruby/gems/$RUBY_VERSION/gems/oneacct-export-$ONEACCT_VERSION
 
@@ -34,7 +35,7 @@ function error_exit
 chown -R root:root $DEST_DIR || error_exit "Cannot chown $DEST_DIR to root:root"
 
 # create the apel user
-id -u apel 2>/dev/null
+id -u apel > /dev/null 2>&1
 if [ "$?" -ne "0" ]; then
   useradd --system --shell /bin/false --home /var/lib/apel --create-home apel || error_exit "Cannot create the apel user account"
   usermod -L apel || error_exit "Cannot lock the apel user account"
@@ -56,10 +57,23 @@ fi
 mkdir -p $CONFIG_DIR || error_exit "Cannot create $CONFIG_DIR"
 chown root:root $CONFIG_DIR || error_exit "Cannot chown $CONFIG_DIR to root:root"
 
+EXPORTER_CONFIG_FILE_DEST=$EXPORTER_CONFIG_FILE
 if [ -f "$EXPORTER_CONFIG_FILE" ]; then
-  EXPORTER_CONFIG_FILE=$EXPORTER_CONFIG_FILE.new
+  EXPORTER_CONFIG_FILE_DEST=$EXPORTER_CONFIG_FILE.new
 fi
-cp $EMBEDDED_GEM_ROOT/config/conf.yml $EXPORTER_CONFIG_FILE || error_exit "Cannot create $EXPORTER_CONFIG_FILE"
+cp $EMBEDDED_GEM_ROOT/config/conf.yml $EXPORTER_CONFIG_FILE_DEST || error_exit "Cannot create $EXPORTER_CONFIG_FILE_DEST"
+
+which rpm > /dev/null 2>&1
+if [ "$?" -eq "0" ]; then
+  RPM_VERSION=`rpm -q oneacct-export | sort | head -n 1 | grep --color=never -oe"[0-9]\+\.[0-9]\+\.[0-9]\+"`
+fi
+
+# copy new version of configuration file if moving through 0.4 version
+if [ "x" != "x$2" -a "x$2" \< "x$ONEACCT_NEW_CONFIG_VERSION" ] || [ "$1" != "configure" -a "x$1" \> "x1" -a "x$RPM_VERSION" \< "x$ONEACCT_NEW_CONFIG_VERSION" ]; then
+  mv $EXPORTER_CONFIG_FILE $EXPORTER_CONFIG_FILE.old || error_exit "Cannot move $EXPORTER_CONFIG_FILE"
+  cp $EMBEDDED_GEM_ROOT/config/conf.yml $EXPORTER_CONFIG_FILE || error_exit "Cannot create $EXPORTER_CONFIG_FILE"
+  echo "New configuration file was released. Please modify it according to your needs."
+fi
 
 if [ -f "$SIDEKIQ_CONFIG_FILE" ]; then
   SIDEKIQ_CONFIG_FILE=$SIDEKIQ_CONFIG_FILE.new
@@ -83,6 +97,12 @@ fi
 
 # adapt configuration example to the current system
 sed -i "s/occi\.localhost\.com/$(hostname -f)/g" $EXPORTER_CONFIG_FILE || error_exit "Cannot adapt $EXPORTER_CONFIG_FILE to local configuration"
+
+# restart sidekiq service if running
+service oneacct-export-sidekiq status > /dev/null 2>&1
+if [ "$?" -eq "0" ]; then
+  service oneacct-export-sidekiq restart
+fi
 
 echo "Thank you for installing oneacct-export!"
 

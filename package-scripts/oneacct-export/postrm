@@ -30,12 +30,10 @@ fi
 
 # clean up init scripts
 if [ -f "$INIT_DIR/oneacct-export-cron" ]; then
-  $INIT_DIR/oneacct-export-cron stop
   rm $INIT_DIR/oneacct-export-cron
 fi
 
 if [ -f "$INIT_DIR/oneacct-export-sidekiq" ]; then
-  $INIT_DIR/oneacct-export-sidekiq stop
   rm $INIT_DIR/oneacct-export-sidekiq
 fi
 
