@@ -14,5 +14,7 @@ function error_exit
 
 # stop sidekiq service
 service oneacct-export-sidekiq stop
+# stop cron service
+service oneacct-export-cron stop
 
 exit 0
