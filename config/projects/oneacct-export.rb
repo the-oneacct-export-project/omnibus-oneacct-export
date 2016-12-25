@@ -6,7 +6,7 @@ homepage 'https://github.com/EGI-FCTF/oneacct_export'
 description 'A tool for exporting OpenNebula\'s accounting data to APEL.'
 
 install_dir     '/opt/oneacct-export'
-build_version   "0.4.3"
+build_version   "0.4.4"
 build_iteration 1
 
 override :rubygems, :version => '2.4.4'
