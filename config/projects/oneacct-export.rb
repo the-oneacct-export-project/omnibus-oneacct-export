@@ -1,12 +1,10 @@
-require 'facter'
-
 name 'oneacct-export'
-maintainer 'Michal Kimle <kimle.michal@gmail.com>'
-homepage 'https://github.com/EGI-FCTF/oneacct_export'
+maintainer 'Boris Parak <parak@cesnet.cz>'
+homepage 'https://github.com/the-oneacct-export-project/oneacct-export'
 description 'A tool for exporting OpenNebula\'s accounting data to APEL.'
 
 install_dir     '/opt/oneacct-export'
-build_version   "0.4.6"
+build_version   "0.5.0"
 build_iteration 1
 
 override :rubygems, :version => '2.4.8'
@@ -23,11 +21,10 @@ dependency 'oneacct-export'
 # version manifest file
 dependency 'version-manifest'
 
-case Facter.value('operatingsystem')
-when 'Debian', 'Ubuntu'
-  runtime_dependency 'redis-server'
-when 'CentOS'
+if File.exists? '/etc/redhat-release'
   runtime_dependency 'redis'
+else
+  runtime_dependency 'redis-server'
 end
 
 # tweaking package-specific options
